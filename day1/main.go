@@ -43,7 +43,6 @@ func main() {
 
 	fmt.Println(solveA(listA, listB))
 	fmt.Println(solveB(listA, listB))
-
 }
 
 func solveA(listA, listB []int) int {
