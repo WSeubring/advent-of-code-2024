@@ -9,8 +9,10 @@ import (
 	"strings"
 )
 
-const MAX_SAFE_STEP_SIZE = 3
-const MIN_SAFE_STEP_SIZE = 1
+const (
+	MAX_SAFE_STEP_SIZE = 3
+	MIN_SAFE_STEP_SIZE = 1
+)
 
 func main() {
 	path := "day2/input.txt"
@@ -26,47 +28,62 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		levelsAsString := strings.Fields(scanner.Text())
+		levels := stringsToInts(levelsAsString)
 
-		levels := make([]int, len(levelsAsString))
-		for i, levelAsString := range levelsAsString {
-			level, err := strconv.Atoi(levelAsString)
-			if err != nil {
-				log.Fatal(err)
+		ok, _ := isReportSave(levels)
+
+		if ok {
+			sum++
+		} else {
+			for i := 0; i < len(levels); i++ {
+				left := levels[:i]
+				right := levels[i+1:]
+				subsetLevels := append(left, right...)
+				ok, _ := isReportSave(subsetLevels)
+				if ok {
+					sum++
+					break
+				}
 			}
-			levels[i] = level
-		}
-
-		if isReportSave(levels) {
-			sum += 1
 		}
 	}
 
 	log.Println(sum)
 }
 
-func isReportSave(levels []int) bool {
+func stringsToInts(strings []string) []int {
+	ints := make([]int, len(strings))
+	for i, s := range strings {
+		ints[i], _ = strconv.Atoi(s)
+	}
+	return ints
+}
+
+func isReportSave(levels []int) (bool, int) {
 	prevLevel := levels[0]
 	trend := computeTrend(prevLevel, levels[1])
-	if trend == 0 {
-		return false
-	}
 
-	for _, level := range levels[1:] {
-		if !isStepSafe(prevLevel, level) {
-			return false
-		}
-
-		newTrend := computeTrend(prevLevel, level)
-		if newTrend != trend {
-			return false
+	for i, level := range levels[1:] {
+		if !isStepSafe(prevLevel, level, trend) {
+			return false, i + 1
 		}
 
 		prevLevel = level
 	}
+	return true, 0
+}
+
+func isStepSafe(prev, current, trend int) bool {
+	if !isStepSizeSafe(prev, current) {
+		return false
+	}
+	if computeTrend(prev, current) != trend || trend == 0 {
+		return false
+	}
 	return true
 }
 
-func isStepSafe(prev, current int) bool {
+func isStepSizeSafe(prev, current int) bool {
 	step := int(math.Abs(float64(current) - float64(prev)))
 	return step >= MIN_SAFE_STEP_SIZE && step <= MAX_SAFE_STEP_SIZE
 }
