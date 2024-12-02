@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const inputFile = "input.txt"
+const inputFile = "day1/input.txt"
 
 func main() {
 	file, err := os.Open(inputFile)
@@ -27,7 +27,7 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		parts := strings.Split(line, "   ")
+		parts := strings.Fields(line)
 		a, err := strconv.Atoi(parts[0])
 		if err != nil {
 			log.Fatal(err)
