@@ -1,12 +1,12 @@
-package main
+package day2
 
 import (
 	"bufio"
 	"log"
-	"math"
 	"os"
-	"strconv"
 	"strings"
+
+	"github.com/wseubring/aoc2024/utils"
 )
 
 const (
@@ -14,7 +14,7 @@ const (
 	MIN_SAFE_STEP_SIZE = 1
 )
 
-func main() {
+func Solve() {
 	path := "day2/input.txt"
 
 	file, err := os.Open(path)
@@ -28,19 +28,17 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		levelsAsString := strings.Fields(scanner.Text())
-		levels := stringsToInts(levelsAsString)
+		levels, err := utils.StringsToInts(levelsAsString)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-		ok, _ := isReportSave(levels)
-
-		if ok {
+		if isReportSave(levels) {
 			sum++
 		} else {
 			for i := 0; i < len(levels); i++ {
-				left := levels[:i]
-				right := levels[i+1:]
-				subsetLevels := append(left, right...)
-				ok, _ := isReportSave(subsetLevels)
-				if ok {
+				subsetLevels := utils.RemoveIndexFromArr(levels, i)
+				if isReportSave(subsetLevels) {
 					sum++
 					break
 				}
@@ -51,26 +49,18 @@ func main() {
 	log.Println(sum)
 }
 
-func stringsToInts(strings []string) []int {
-	ints := make([]int, len(strings))
-	for i, s := range strings {
-		ints[i], _ = strconv.Atoi(s)
-	}
-	return ints
-}
-
-func isReportSave(levels []int) (bool, int) {
+func isReportSave(levels []int) bool {
 	prevLevel := levels[0]
 	trend := computeTrend(prevLevel, levels[1])
 
-	for i, level := range levels[1:] {
+	for _, level := range levels[1:] {
 		if !isStepSafe(prevLevel, level, trend) {
-			return false, i + 1
+			return false
 		}
 
 		prevLevel = level
 	}
-	return true, 0
+	return true
 }
 
 func isStepSafe(prev, current, trend int) bool {
@@ -84,17 +74,10 @@ func isStepSafe(prev, current, trend int) bool {
 }
 
 func isStepSizeSafe(prev, current int) bool {
-	step := int(math.Abs(float64(current) - float64(prev)))
+	step := utils.AbsInt(prev - current)
 	return step >= MIN_SAFE_STEP_SIZE && step <= MAX_SAFE_STEP_SIZE
 }
 
 func computeTrend(prev, current int) int {
-	return boolToInt(current > prev) - boolToInt(prev > current)
-}
-
-func boolToInt(b bool) int {
-	if b {
-		return 1
-	}
-	return 0
+	return utils.BoolToInt(current > prev) - utils.BoolToInt(prev > current)
 }
