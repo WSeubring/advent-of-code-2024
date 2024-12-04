@@ -29,3 +29,19 @@ func BoolToInt(b bool) int {
 	}
 	return 0
 }
+
+func StringToRunes(s string) []rune {
+	runes := make([]rune, len(s))
+	for i, r := range s {
+		runes[i] = r
+	}
+	return runes
+}
+
+func StringsToRunes(strings []string) [][]rune {
+	runes := make([][]rune, len(strings))
+	for i, s := range strings {
+		runes[i] = StringToRunes(s)
+	}
+	return runes
+}
