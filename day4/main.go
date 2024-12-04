@@ -65,3 +65,135 @@ func SolveA() {
 	puzzle := LoadPuzzle()
 	fmt.Println(puzzle.FindWordOccurrences("XMAS"))
 }
+
+// Part B
+// First rewrite use a kernel instead
+var xmasKernels = [][][]rune{
+	{
+		{'X', 'M', 'A', 'S'},
+	},
+	{
+		{'S', 'A', 'M', 'X'},
+	},
+	{
+		{'X'},
+		{'M'},
+		{'A'},
+		{'S'},
+	},
+	{
+		{'S'},
+		{'A'},
+		{'M'},
+		{'X'},
+	},
+	{
+		{'X', ' ', ' ', ' '},
+		{' ', 'M', ' ', ' '},
+		{' ', ' ', 'A', ' '},
+		{' ', ' ', ' ', 'S'},
+	},
+	{
+		{' ', ' ', ' ', 'X'},
+		{' ', ' ', 'M', ' '},
+		{' ', 'A', ' ', ' '},
+		{'S', ' ', ' ', ' '},
+	},
+	{
+		{'S', ' ', ' ', ' '},
+		{' ', 'A', ' ', ' '},
+		{' ', ' ', 'M', ' '},
+		{' ', ' ', ' ', 'X'},
+	},
+	{
+		{' ', ' ', ' ', 'S'},
+		{' ', ' ', 'A', ' '},
+		{' ', 'M', ' ', ' '},
+		{'X', ' ', ' ', ' '},
+	},
+}
+
+func (p Puzzle) FindKernelOccurrences(kernel [][]rune) int {
+	occurrences := 0
+	for y := 0; y < len(p); y++ {
+		for x := 0; x < len(p[y]); x++ {
+			if p.MatchKernel(x, y, kernel) {
+				occurrences++
+			}
+		}
+	}
+	return occurrences
+}
+
+func (p Puzzle) MatchKernel(x, y int, kernel [][]rune) bool {
+	for ky, row := range kernel {
+		for kx, char := range row {
+			// Check if we are out of bounds
+			if x+kx >= len(p[0]) || y+ky >= len(p) {
+				return false
+			}
+
+			// Skip spaces
+			if char == ' ' {
+				continue
+			}
+
+			// Check if the character matches
+			if p[y+ky][x+kx] != char {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func (p Puzzle) FindKernelsOccurrences(kernels [][][]rune) int {
+	occurrences := 0
+	for _, kernel := range kernels {
+		occurrences += p.FindKernelOccurrences(kernel)
+	}
+
+	return occurrences
+}
+
+var masKernels = [][][]rune{
+	{
+		{'M', ' ', 'M'},
+		{' ', 'A', ' '},
+		{'S', ' ', 'S'},
+	},
+	{
+		{'S', ' ', 'S'},
+		{' ', 'A', ' '},
+		{'M', ' ', 'M'},
+	},
+	{
+		{'M', ' ', 'S'},
+		{' ', 'A', ' '},
+		{'M', ' ', 'S'},
+	},
+	{
+		{'S', ' ', 'M'},
+		{' ', 'A', ' '},
+		{'S', ' ', 'M'},
+	},
+}
+
+func SolveB() {
+	puzzle := LoadPuzzle()
+
+	// Kernels to match xmas from all directions
+	fmt.Println(puzzle.FindKernelsOccurrences(xmasKernels))
+
+	// Second problem
+	fmt.Println(puzzle.FindKernelsOccurrences(masKernels))
+}
+
+func PrintRuneGrid(grid [][]rune) {
+	for _, row := range grid {
+		for _, char := range row {
+			fmt.Printf("%c", char)
+		}
+		fmt.Println()
+	}
+}

@@ -70,3 +70,40 @@ func TestPuzzleGetStringInDirection(t *testing.T) {
 func TestSolveA(t *testing.T) {
 	SolveA()
 }
+
+func TestFindKernelOccurrences(t *testing.T) {
+	test := []string{"test", "xexe", "xxss", "xxxt"}
+	grid := utils.StringsToRunes(test)
+	puzzle := Puzzle(grid)
+
+	testKernel1 := [][]rune{
+		{'t', 'e', 's', 't'},
+	}
+
+	testKernel2 := [][]rune{
+		{'t', ' ', ' ', ' '},
+		{' ', 'e', ' ', ' '},
+		{' ', ' ', 's', ' '},
+		{' ', ' ', ' ', 't'},
+	}
+
+	testKernel3 := [][]rune{
+		{'t'},
+		{'e'},
+		{'s'},
+		{'t'},
+	}
+
+	count1 := puzzle.FindKernelOccurrences(testKernel1)
+	assert.Equal(t, 1, count1)
+
+	count2 := puzzle.FindKernelOccurrences(testKernel2)
+	assert.Equal(t, 1, count2)
+
+	count3 := puzzle.FindKernelOccurrences(testKernel3)
+	assert.Equal(t, 1, count3)
+}
+
+func TestSolveB(t *testing.T) {
+	SolveB()
+}
