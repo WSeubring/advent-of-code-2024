@@ -1,6 +1,9 @@
 package utils
 
-import "strconv"
+import (
+	"strconv"
+	"strings"
+)
 
 func StringsToInts(strings []string) ([]int, error) {
 	ints := make([]int, len(strings))
@@ -16,7 +19,7 @@ func StringsToInts(strings []string) ([]int, error) {
 }
 
 func StringToInt(s string) (int, error) {
-	i, err := strconv.Atoi(s)
+	i, err := strconv.Atoi(strings.TrimSpace(s))
 	if err != nil {
 		return 0, err
 	}
