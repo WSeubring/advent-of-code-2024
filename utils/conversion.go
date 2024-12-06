@@ -48,3 +48,11 @@ func StringsToRunes(strings []string) [][]rune {
 	}
 	return runes
 }
+
+func RunesToString(runes [][]rune) string {
+	var result string
+	for _, row := range runes {
+		result += string(row) + "\n"
+	}
+	return result
+}

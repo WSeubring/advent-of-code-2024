@@ -39,7 +39,6 @@ func (s *SafetyManualUpdate) IsRuleSatisfied(rule PageOrderRule) bool {
 func (s *SafetyManualUpdate) IsRuleSetSatisfied(ruleSet []PageOrderRule) bool {
 	for _, rule := range ruleSet {
 		if !s.IsRuleSatisfied(rule) {
-			fmt.Println("Rule not satisfied", rule)
 			return false
 		}
 	}
