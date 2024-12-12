@@ -74,11 +74,12 @@ func (c Calculation) findResultsRec(remaining []int, sum int) []int {
 	if err != nil {
 		panic(err)
 	}
-
+	// Part 1
 	result := append(
 		c.findResultsRec(remaining, sum+nextValue),
 		c.findResultsRec(remaining, sum*nextValue)...,
 	)
+	// Part 2
 	result = append(result, c.findResultsRec(remaining, stringConcatAsNumber)...)
 
 	return result
